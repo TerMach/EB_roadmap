@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>E&B Board Evaluation Platform — Delivery Roadmap</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',system-ui,sans-serif;background:#f8f7f5;color:#2c2c2a;min-height:100vh;padding:2rem 1.5rem}
+
+.page{max-width:1500px;margin:0 auto;width:100%}
+
+.header{margin-bottom:2rem}
+.header h1{font-size:22px;font-weight:600;color:#1a1a1a;margin-bottom:4px}
+.header p{font-size:14px;color:#888780;line-height:1.5}
+
+.legend{display:flex;flex-wrap:wrap;gap:18px;margin-bottom:1.5rem;padding:12px 16px;background:#fff;border:1px solid #e8e6e1;border-radius:8px}
+.legend span{display:flex;align-items:center;gap:6px;font-size:13px;color:#5f5e5a}
+.legend i{width:14px;height:14px;border-radius:3px;display:inline-block}
+
+.chart-wrap{background:#fff;border:1px solid #e8e6e1;border-radius:10px;padding:1.5rem;overflow-x:auto}
+.scroll-inner{position:relative}
+
+.track{position:relative;height:28px;margin:2px 0}
+.bar{position:absolute;height:26px;border-radius:4px;display:flex;align-items:center;padding:0 10px;font-size:11.5px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:default;transition:all .2s ease;border:1px solid rgba(0,0,0,.06)}
+.bar:hover{transform:translateY(-1px);box-shadow:0 2px 8px rgba(0,0,0,.1)}
+.bar span{overflow:hidden;text-overflow:ellipsis}
+
+.sep{height:12px}
+.vline{position:absolute;top:0;bottom:0;border-left:1px solid #f0eeea;pointer-events:none}
+
+.axis{display:flex;border-top:1.5px solid #d3d1c7;padding-top:8px;margin-top:8px}
+.axis span{text-align:center;font-size:11px;color:#888780;font-weight:500}
+
+.footer{margin-top:1.5rem;padding:16px;background:#fff;border:1px solid #e8e6e1;border-radius:8px}
+.footer p{font-size:12.5px;color:#888780;line-height:1.7}
+.footer strong{color:#5f5e5a}
+
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-bottom:1.5rem}
+.stat{background:#fff;border:1px solid #e8e6e1;border-radius:8px;padding:14px 16px;text-align:center}
+.stat .num{font-size:26px;font-weight:600;color:#1a1a1a}
+.stat .lbl{font-size:11px;color:#888780;margin-top:2px;text-transform:uppercase;letter-spacing:.5px}
+
+.tooltip{position:fixed;background:#2c2c2a;color:#fff;font-size:12px;padding:8px 14px;border-radius:6px;pointer-events:none;opacity:0;transition:opacity .15s;z-index:999;max-width:420px;line-height:1.5;white-space:pre-line}
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="header">
+    <h1>E&B Board Evaluation Platform — Delivery Roadmap</h1>
+    <p>Core Edition: 22 weeks from kick-off to production go-live. Each bar represents a concrete work package. Hover over any bar for details.</p>
+  </div>
+
+  <div class="stats">
+    <div class="stat"><div class="num">34</div><div class="lbl">Work packages</div></div>
+    <div class="stat"><div class="num">22</div><div class="lbl">Weeks</div></div>
+    <div class="stat"><div class="num">4</div><div class="lbl">Layers</div></div>
+    <div class="stat"><div class="num">Q3 2026</div><div class="lbl">Go-live</div></div>
+  </div>
+
+  <div class="legend">
+    <span><i style="background:#EAB946"></i>Demo (June/July event)</span>
+    <span><i style="background:#5A9BD5"></i>Foundation — invisible but essential</span>
+    <span><i style="background:#E07A5F"></i>Survey engine — the core workflow</span>
+    <span><i style="background:#3CB371"></i>Computation & reports — the hardest part</span>
+    <span><i style="background:#9B8EC5"></i>Integration & launch</span>
+  </div>
+
+  <div class="chart-wrap">
+    <div class="scroll-inner" id="grid"></div>
+  </div>
+
+  <div class="footer">
+    <p><strong>Why does this take 22 weeks?</strong> Nathan's prototype demonstrates excellent product vision — it shows what the platform should look and feel like. What we build underneath is everything that makes it production-ready: data isolation between clients (Row-Level Security), governance-grade anonymity controls, automated Word report generation with native charts, AI narrative drafting under strict data governance, and a security posture that board-level clients expect. That's the difference between a demo and a platform you put in front of a FTSE 100 board.</p>
+  </div>
+</div>
+
+<div class="tooltip" id="tip"></div>
+
+<script>
+const W=22, PX=62;
+const totalW = W * PX;
+
+const tasks=[
+  {n:'UI design mockups for June/July event',s:1,e:4,bg:'#EAB946',fg:'#5a3e00'},
+  {n:'SEP'},
+  {n:'PostgreSQL data model design',s:1,e:3,bg:'#B5D4F4',fg:'#1a4a7a'},
+  {n:'CI/CD pipeline + 3 environments (DEV / STAGE / PROD)',s:1,e:4,bg:'#5A9BD5',fg:'#fff'},
+  {n:'Row-level security — tenant data isolation',s:2,e:4,bg:'#B5D4F4',fg:'#1a4a7a'},
+  {n:'Microsoft Entra authentication setup',s:2,e:5,bg:'#5A9BD5',fg:'#fff'},
+  {n:'Role-based authorization (Secretary / Chair / Admin)',s:3,e:5,bg:'#B5D4F4',fg:'#1a4a7a'},
+  {n:'API layer + OWASP security hardening',s:3,e:6,bg:'#5A9BD5',fg:'#fff'},
+  {n:'Multi-tenant workspace provisioning',s:4,e:6,bg:'#B5D4F4',fg:'#1a4a7a'},
+  {n:'Audit logging infrastructure',s:4,e:6,bg:'#5A9BD5',fg:'#fff'},
+  {n:'SEP'},
+  {n:'SurveyJS integration + custom question types (2×2 Matrix, Time Allocation, Rating Grid)',s:5,e:7,bg:'#F4C2AD',fg:'#6b2e1a'},
+  {n:'Template library + visual question editor',s:5,e:8,bg:'#E07A5F',fg:'#fff'},
+  {n:'Word import with AI parsing + human review',s:6,e:8,bg:'#F4C2AD',fg:'#6b2e1a'},
+  {n:'Distribution engine — magic links, personalized invitations',s:7,e:9,bg:'#E07A5F',fg:'#fff'},
+  {n:'Respondent experience — mobile-first, save & resume',s:7,e:9,bg:'#F4C2AD',fg:'#6b2e1a'},
+  {n:'Participant-based question filtering (role, committee)',s:8,e:9,bg:'#E07A5F',fg:'#fff'},
+  {n:'Conversational AI mode — elaboration probing for richer data',s:8,e:10,bg:'#F4C2AD',fg:'#6b2e1a'},
+  {n:'Multi-language authoring + AI-assisted translation',s:8,e:10,bg:'#E07A5F',fg:'#fff'},
+  {n:'Real-time completion monitoring dashboard',s:9,e:10,bg:'#F4C2AD',fg:'#6b2e1a'},
+  {n:'SEP'},
+  {n:'Aggregation engine — section scores, distributions (Python/Pandas)',s:9,e:11,bg:'#A8E6C3',fg:'#1a5a3a'},
+  {n:'Convergence / divergence computation across respondent types',s:10,e:12,bg:'#3CB371',fg:'#fff'},
+  {n:'Committee & role-based analytical breakdowns',s:11,e:12,bg:'#A8E6C3',fg:'#1a5a3a'},
+  {n:'Low-N anonymization suppression (configurable threshold)',s:11,e:13,bg:'#3CB371',fg:'#fff'},
+  {n:'Spider chart + visualization data generation',s:12,e:13,bg:'#A8E6C3',fg:'#1a5a3a'},
+  {n:'BSE Word report rendering — branded, native editable charts, committee views',s:12,e:16,bg:'#3CB371',fg:'#fff'},
+  {n:'Individual Director report — 3-table format, deviation highlighting',s:14,e:16,bg:'#A8E6C3',fg:'#1a5a3a'},
+  {n:'AI executive narrative drafting from stored aggregates',s:14,e:16,bg:'#3CB371',fg:'#fff'},
+  {n:'CSV raw data export with anonymization controls',s:15,e:16,bg:'#A8E6C3',fg:'#1a5a3a'},
+  {n:'SEP'},
+  {n:'End-to-end integration testing — full evaluation cycle',s:15,e:18,bg:'#C5BAE0',fg:'#3a2d6b'},
+  {n:'Custom branding per client workspace',s:17,e:18,bg:'#9B8EC5',fg:'#fff'},
+  {n:'UAT with E&B team — real evaluation scenarios',s:17,e:19,bg:'#C5BAE0',fg:'#3a2d6b'},
+  {n:'Operational monitoring — logging, metrics, alerting (LGTM)',s:18,e:19,bg:'#9B8EC5',fg:'#fff'},
+  {n:'Security review + penetration testing',s:19,e:20,bg:'#C5BAE0',fg:'#3a2d6b'},
+  {n:'Knowledge transfer + documentation for E&B team',s:20,e:22,bg:'#9B8EC5',fg:'#fff'},
+  {n:'Stabilization + production go-live',s:21,e:22,bg:'#C5BAE0',fg:'#3a2d6b'},
+];
+
+const grid = document.getElementById('grid');
+grid.style.width = totalW + 'px';
+
+const barCount = tasks.filter(t => t.n !== 'SEP').length;
+const sepCount = tasks.filter(t => t.n === 'SEP').length;
+const linesH = barCount * 32 + sepCount * 12 + 30;
+
+for(let i = 0; i <= W; i++){
+  const vl = document.createElement('div');
+  vl.className = 'vline';
+  vl.style.left = (i * PX) + 'px';
+  vl.style.height = linesH + 'px';
+  grid.appendChild(vl);
+}
+
+const tip = document.getElementById('tip');
+
+tasks.forEach(t => {
+  if(t.n === 'SEP'){
+    const s = document.createElement('div');
+    s.className = 'sep';
+    grid.appendChild(s);
+    return;
+  }
+  const tr = document.createElement('div');
+  tr.className = 'track';
+  const bar = document.createElement('div');
+  bar.className = 'bar';
+  bar.style.left = ((t.s - 1) * PX) + 'px';
+  bar.style.width = ((t.e - t.s + 1) * PX) + 'px';
+  bar.style.background = t.bg;
+  bar.style.color = t.fg;
+
+  const span = document.createElement('span');
+  span.textContent = t.n;
+  bar.appendChild(span);
+
+  const weeks = t.e - t.s + 1;
+  const tipText = t.n + '\nWeek ' + t.s + ' – ' + t.e + '  (' + weeks + ' week' + (weeks > 1 ? 's' : '') + ')';
+
+  bar.addEventListener('mouseenter', e => {
+    tip.textContent = tipText;
+    tip.style.opacity = '1';
+  });
+  bar.addEventListener('mousemove', e => {
+    tip.style.left = (e.clientX + 14) + 'px';
+    tip.style.top = (e.clientY - 40) + 'px';
+  });
+  bar.addEventListener('mouseleave', () => {
+    tip.style.opacity = '0';
+  });
+
+  tr.appendChild(bar);
+  grid.appendChild(tr);
+});
+
+const ax = document.createElement('div');
+ax.className = 'axis';
+for(let i = 1; i <= W; i++){
+  const s = document.createElement('span');
+  s.style.width = PX + 'px';
+  s.textContent = 'W' + i;
+  ax.appendChild(s);
+}
+grid.appendChild(ax);
+</script>
+</body>
+</html>
