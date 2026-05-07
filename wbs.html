@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>E&B Board Evaluation Platform — Work Breakdown Structure</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',system-ui,sans-serif;background:#f5f4f1;color:#2c2c2a;min-height:100vh;padding:2rem 1rem}
+.page{max-width:1500px;margin:0 auto}
+.header{text-align:center;margin-bottom:1.5rem}
+.header h1{font-size:21px;font-weight:600;color:#1a1a1a;margin-bottom:4px}
+.header p{font-size:13px;color:#999;line-height:1.5;max-width:700px;margin:0 auto}
+
+.stats{display:flex;justify-content:center;gap:12px;margin-bottom:2rem;flex-wrap:wrap}
+.stat{background:#fff;border:1px solid #e8e6e1;border-radius:8px;padding:10px 20px;text-align:center}
+.stat .num{font-size:22px;font-weight:600;color:#1a1a1a}
+.stat .lbl{font-size:10px;color:#888;text-transform:uppercase;letter-spacing:.5px}
+
+.tree-container{overflow-x:auto;padding-bottom:1rem}
+.tree{position:relative;display:flex;flex-direction:column;align-items:center;min-width:1100px;padding:0 1rem}
+.tree svg.lines{position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:0}
+.tree svg.lines line{stroke:#ccc;stroke-width:1.5}
+
+.root-row{display:flex;justify-content:center;margin-bottom:0;position:relative;z-index:1}
+.root{background:#2c2c2a;color:#fff;padding:12px 28px;border-radius:8px;font-size:15px;font-weight:600;text-align:center}
+
+.seq-hint{text-align:center;margin-top:8px;margin-bottom:0;font-size:11px;color:#bbb;letter-spacing:.3px}
+
+.layer-row{display:flex;justify-content:center;gap:14px;position:relative;z-index:1;margin-top:40px;align-items:flex-start}
+
+.layer-col{display:flex;flex-direction:column;align-items:center;flex:1;max-width:260px;min-width:190px}
+.layer-head{padding:10px 14px;border-radius:8px;text-align:center;font-size:13px;font-weight:600;width:100%;cursor:default;position:relative}
+.layer-head .num{font-size:10px;font-weight:400;opacity:.7;display:block;margin-top:1px}
+
+.tasks-col{display:flex;flex-direction:column;align-items:center;gap:5px;margin-top:12px;width:100%}
+.task-node{background:#fff;border:1px solid #e0deda;border-radius:6px;padding:8px 10px;width:100%;cursor:default;transition:all .15s;line-height:1.35}
+.task-node:hover{border-color:#aaa;box-shadow:0 2px 8px rgba(0,0,0,.08);transform:translateY(-1px)}
+.task-title{font-size:12px;font-weight:600;color:#2c2c2a;margin-bottom:3px}
+.task-title .task-id{color:#999;font-weight:500;margin-right:3px}
+.task-desc{font-size:10.5px;color:#888;line-height:1.4}
+.task-tags{display:flex;gap:3px;flex-wrap:wrap;margin-top:4px}
+.task-tag{font-size:9px;padding:1px 6px;border-radius:3px;font-weight:500}
+
+/* Layer colors */
+.lh-demo{background:#fdf3d7;color:#6b4d00;border:1px solid #f0d88a}
+.lh-found{background:#d6e6f7;color:#1a4a7a;border:1px solid #a8c8e8}
+.lh-survey{background:#fce0d5;color:#6b2e1a;border:1px solid #f0b8a0}
+.lh-comp{background:#d0f0de;color:#1a5a3a;border:1px solid #8ed4a8}
+.lh-launch{background:#e2dcf2;color:#3a2d6b;border:1px solid #c0b4e0}
+
+.lc-demo .task-node{border-left:3px solid #EAB946}
+.lc-demo .task-tag{background:#fdf3d7;color:#7a5600}
+.lc-found .task-node{border-left:3px solid #5A9BD5}
+.lc-found .task-tag{background:#d6e6f7;color:#1a4a7a}
+.lc-survey .task-node{border-left:3px solid #E07A5F}
+.lc-survey .task-tag{background:#fce0d5;color:#6b2e1a}
+.lc-comp .task-node{border-left:3px solid #3CB371}
+.lc-comp .task-tag{background:#d0f0de;color:#1a5a3a}
+.lc-launch .task-node{border-left:3px solid #9B8EC5}
+.lc-launch .task-tag{background:#e2dcf2;color:#3a2d6b}
+
+.footer{margin-top:2rem;padding:14px 16px;background:#fff;border:1px solid #e8e6e1;border-radius:8px;max-width:900px;margin-left:auto;margin-right:auto}
+.footer p{font-size:12px;color:#888;line-height:1.6}
+.footer strong{color:#666}
+.footer .note{margin-top:6px;font-style:italic}
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="header">
+    <h1>E&B Board Evaluation Platform — Work Breakdown Structure</h1>
+    <p>High-level breakdown of all work packages. Layers are ordered left → right by build sequence — each layer builds on the previous one.</p>
+  </div>
+
+  <div class="stats">
+    <div class="stat"><div class="num">34</div><div class="lbl">Work packages</div></div>
+    <div class="stat"><div class="num">5</div><div class="lbl">Layers</div></div>
+    <div class="stat"><div class="num">2</div><div class="lbl">Core FTEs</div></div>
+    <div class="stat"><div class="num">Q3 2026</div><div class="lbl">Target go-live</div></div>
+  </div>
+
+  <div class="tree-container">
+    <div class="tree" id="tree">
+      <svg class="lines" id="svg"></svg>
+      <div class="root-row"><div class="root" id="rootNode">E&B Board Evaluation Platform</div></div>
+      <p class="seq-hint">← Build sequence →</p>
+      <div class="layer-row" id="layerRow"></div>
+    </div>
+  </div>
+
+  <div class="footer">
+    <p><strong>Note:</strong> This WBS shows the scope and sequence of work, not a fixed timeline. Actual scheduling depends on team capacity, client availability for feedback, and priority decisions made together during delivery.</p>
+    <p class="note">Layers build on each other — the Survey Engine requires the Foundation, Reports require the Survey Engine. The Demo workstream runs independently.</p>
+  </div>
+</div>
+
+<script>
+const layers = [
+  {
+    id:'demo', hcls:'lh-demo', ccls:'lc-demo', title:'0. Demo', sub:'July event',
+    tasks:[
+      {id:'0.1',n:'UI design mockups',d:'Clickable prototype for E&B conference presentation. Visual-only, no backend.',t:['UX','Design']},
+      {id:'0.2',n:'Brand integration',d:'E&B visual identity, typography, color scheme applied to demo screens.',t:['Design']},
+    ]
+  },
+  {
+    id:'found', hcls:'lh-found', ccls:'lc-found', title:'1. Foundation', sub:'Invisible but essential',
+    tasks:[
+      {id:'1.1',n:'PostgreSQL data model',d:'Relational schema for surveys, responses, templates, organizations, directors. Immutable snapshots with stable question IDs.',t:['Database','Architecture']},
+      {id:'1.2',n:'Row-Level Security',d:'Client A can never see Client B\'s data. Enforced at database level, not application code.',t:['Security','Database']},
+      {id:'1.3',n:'Entra authentication',d:'Three access patterns: E&B admin login, Secretary email+password, Director magic-link.',t:['Security','Auth']},
+      {id:'1.4',n:'Role-based authorization',d:'Secretary, Chair, Consultant, Admin — each sees different data per evaluation.',t:['Security']},
+      {id:'1.5',n:'Multi-tenant provisioning',d:'Onboard new clients: create workspace, assign templates, configure branding, set access.',t:['Architecture']},
+      {id:'1.6',n:'API + OWASP hardening',d:'RESTful API connecting all services. Rate limiting, input validation, CORS, audit logging.',t:['Backend','Security']},
+      {id:'1.7',n:'CI/CD + environments',d:'Automated build, test, deploy across DEV → STAGE → PROD.',t:['DevOps']},
+      {id:'1.8',n:'Audit logging',d:'Who accessed what, when. Full traceability required for governance clients.',t:['Security','Compliance']},
+    ]
+  },
+  {
+    id:'survey', hcls:'lh-survey', ccls:'lc-survey', title:'2. Survey Engine', sub:'The core workflow',
+    tasks:[
+      {id:'2.1',n:'SurveyJS + custom types',d:'Standard types plus 2×2 Matrix, Time Allocation, Rating Grid. Styled per client brand.',t:['Frontend','Integration']},
+      {id:'2.2',n:'Template library + editor',d:'Pre-built methodology templates. Drag-and-drop customization of sections and questions.',t:['Frontend','UX']},
+      {id:'2.3',n:'Word import + AI parsing',d:'Upload Word questionnaire → AI extracts structure → Secretary reviews and approves.',t:['AI','Integration']},
+      {id:'2.4',n:'Distribution engine',d:'Magic-link invitations, configurable sender and reminders. Email deliverability best practices.',t:['Backend','Email']},
+      {id:'2.5',n:'Respondent experience',d:'Mobile-first, save & resume, progress indicator. Works on any device, no install.',t:['Frontend','UX']},
+      {id:'2.6',n:'Participant filtering',d:'Chair doesn\'t see questions about the Chair. Committee-specific sections for relevant members only.',t:['Backend','Logic']},
+      {id:'2.7',n:'Conversational AI mode',d:'AI asks follow-up when director gives a thin answer. Richer data without post-survey interviews.',t:['AI','UX']},
+      {id:'2.8',n:'Multi-language + AI translation',d:'Author in one language, AI drafts translation, reviewer approves. Reusable across cycles.',t:['AI','i18n']},
+      {id:'2.9',n:'Completion monitoring',d:'Real-time dashboard: who received, started, completed. Auto-reminder triggers.',t:['Frontend','Backend']},
+    ]
+  },
+  {
+    id:'comp', hcls:'lh-comp', ccls:'lc-comp', title:'3. Computation & Reports', sub:'The hardest part',
+    tasks:[
+      {id:'3.1',n:'Aggregation engine',d:'Python/Pandas: section scores, distributions, normalized values. Pre-computed aggregates as single source of truth.',t:['Data','Python']},
+      {id:'3.2',n:'Convergence / divergence',d:'Measure alignment between Board Members, Management, and Chair. Flag high-disagreement questions.',t:['Data','Analytics']},
+      {id:'3.3',n:'Committee breakdowns',d:'Disaggregate results by committee, role, and director attributes.',t:['Data','Analytics']},
+      {id:'3.4',n:'Low-N suppression',d:'Groups below threshold (default: 5) hidden from aggregates. Protects anonymity in small boards.',t:['Security','Data']},
+      {id:'3.5',n:'Spider chart data',d:'Radar chart data for section overview. Distribution bars, alignment dots, improvement indicators.',t:['Data','Visualization']},
+      {id:'3.6',n:'BSE Word report',d:'Branded Word doc with native editable charts, rankings, committee views, open-text. Extensive iteration on fidelity.',t:['Python','Reporting']},
+      {id:'3.7',n:'Individual Director report',d:'Three-table format: director vs. aggregate, deviation highlighting. For Chair interview prep. Audit-logged.',t:['Python','Reporting']},
+      {id:'3.8',n:'AI executive narrative',d:'AI drafts summary from aggregates. Secretary reviews, edits, approves. Both versions retained.',t:['AI','Reporting']},
+      {id:'3.9',n:'CSV data export',d:'Anonymization-controlled raw data export for clients\' own analysis.',t:['Data','Export']},
+    ]
+  },
+  {
+    id:'launch', hcls:'lh-launch', ccls:'lc-launch', title:'4. Integration & Launch', sub:'From "works" to production',
+    tasks:[
+      {id:'4.1',n:'E2E integration testing',d:'Full cycle: create → invite → collect → compute → report. Every path tested.',t:['QA']},
+      {id:'4.2',n:'Custom branding',d:'Client logos, colors, templates. Each workspace looks like the client\'s own.',t:['Frontend','Config']},
+      {id:'4.3',n:'UAT with E&B',d:'Real evaluation scenarios with test data. Feedback incorporated before go-live.',t:['QA','Collaboration']},
+      {id:'4.4',n:'Monitoring (LGTM)',d:'Logging, metrics, tracing, alerting. Immediate visibility if something needs attention.',t:['DevOps','Ops']},
+      {id:'4.5',n:'Security + pen testing',d:'Independent security assessment before board-level clients access the platform.',t:['Security']},
+      {id:'4.6',n:'Knowledge transfer',d:'Documentation, runbooks, hands-on sessions so E&B team understands the codebase.',t:['Docs','Handover']},
+      {id:'4.7',n:'Go-live',d:'Performance tuning, monitoring validation, go/no-go, production deployment.',t:['Ops','Launch']},
+    ]
+  },
+];
+
+const layerRow = document.getElementById('layerRow');
+
+layers.forEach(layer => {
+  const col = document.createElement('div');
+  col.className = 'layer-col ' + layer.ccls;
+
+  const head = document.createElement('div');
+  head.className = 'layer-head ' + layer.hcls;
+  head.id = 'head-' + layer.id;
+  head.innerHTML = layer.title + '<span class="num">' + layer.sub + ' · ' + layer.tasks.length + ' packages</span>';
+  col.appendChild(head);
+
+  const tasksDiv = document.createElement('div');
+  tasksDiv.className = 'tasks-col';
+
+  layer.tasks.forEach(task => {
+    const node = document.createElement('div');
+    node.className = 'task-node';
+
+    const tagsHtml = task.t.map(t => '<span class="task-tag">' + t + '</span>').join('');
+
+    node.innerHTML =
+      '<div class="task-title"><span class="task-id">' + task.id + '</span> ' + task.n + '</div>' +
+      '<div class="task-desc">' + task.d + '</div>' +
+      '<div class="task-tags">' + tagsHtml + '</div>';
+
+    tasksDiv.appendChild(node);
+  });
+
+  col.appendChild(tasksDiv);
+  layerRow.appendChild(col);
+});
+
+function drawLines() {
+  const svg = document.getElementById('svg');
+  const tree = document.getElementById('tree');
+  const treeRect = tree.getBoundingClientRect();
+  svg.setAttribute('width', tree.scrollWidth);
+  svg.setAttribute('height', tree.scrollHeight);
+  svg.innerHTML = '';
+
+  const rootNode = document.getElementById('rootNode');
+  const rootRect = rootNode.getBoundingClientRect();
+  const rootBottomX = rootRect.left + rootRect.width / 2 - treeRect.left;
+  const rootBottomY = rootRect.bottom - treeRect.top;
+
+  const heads = layers.map(l => document.getElementById('head-' + l.id));
+  const headRects = heads.map(h => h.getBoundingClientRect());
+
+  const railY = rootBottomY + 22;
+
+  // Root down
+  const l1 = document.createElementNS('http://www.w3.org/2000/svg','line');
+  l1.setAttribute('x1',rootBottomX);l1.setAttribute('y1',rootBottomY);
+  l1.setAttribute('x2',rootBottomX);l1.setAttribute('y2',railY);
+  svg.appendChild(l1);
+
+  // Horizontal rail
+  const firstX = headRects[0].left + headRects[0].width/2 - treeRect.left;
+  const lastX = headRects[headRects.length-1].left + headRects[headRects.length-1].width/2 - treeRect.left;
+  const rail = document.createElementNS('http://www.w3.org/2000/svg','line');
+  rail.setAttribute('x1',firstX);rail.setAttribute('y1',railY);
+  rail.setAttribute('x2',lastX);rail.setAttribute('y2',railY);
+  svg.appendChild(rail);
+
+  // Drops to each head
+  headRects.forEach(hr => {
+    const cx = hr.left + hr.width/2 - treeRect.left;
+    const topY = hr.top - treeRect.top;
+    const d = document.createElementNS('http://www.w3.org/2000/svg','line');
+    d.setAttribute('x1',cx);d.setAttribute('y1',railY);
+    d.setAttribute('x2',cx);d.setAttribute('y2',topY);
+    svg.appendChild(d);
+  });
+}
+
+window.addEventListener('load', () => { setTimeout(drawLines, 100); });
+window.addEventListener('resize', drawLines);
+</script>
+</body>
+</html>
